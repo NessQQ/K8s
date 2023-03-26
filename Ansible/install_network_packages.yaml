@@ -1,0 +1,16 @@
+---
+- name: Install conntrack, socat, and ipset for Ubuntu Nodes Networking
+  hosts: nodes
+  become: true
+
+  tasks:
+    - name: Install conntrack, socat, and ipset
+      apt:
+        name:
+          - conntrack
+          - socat
+          - ipset
+        state: present
+        update_cache: yes
+        force_apt_get: yes
+        yes: true
