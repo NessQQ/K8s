@@ -1,0 +1,30 @@
+---
+- name: Update and Upgrade Ubuntu Nodes
+  hosts: nodes
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        force_apt_get: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade packages
+      apt:
+        upgrade: yes
+        autoremove: yes
+        autoclean: yes
+        force_apt_get: yes
+        yes: true
+
+    - name: Check if reboot is required
+      shell: test -f /var/run/reboot-required && echo 'reboot' || echo 'no-reboot'
+      register: reboot_required
+      changed_when: False
+
+    - name: Reboot if required
+      reboot:
+        delay: 0
+        msg: "System restarted by Ansible because an upgrade required a reboot."
+      when: reboot_required.stdout == 'reboot'
