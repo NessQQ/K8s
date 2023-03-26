@@ -1,0 +1,15 @@
+---
+- name: Install kubectl on Ubuntu 20.04
+  hosts: bastion
+
+  tasks:
+    - name: Install kubectl
+      become: yes
+      shell: |
+        curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.24.0/bin/linux/amd64/kubectl
+        chmod +x kubectl
+        sudo mv kubectl /usr/local/bin/
+      args:
+        chdir: /tmp
+      register: kubectl_installed
+      changed_when: kubectl_installed.stdout != ""
